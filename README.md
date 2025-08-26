@@ -40,3 +40,56 @@ sudo systemctl start jenkins
 Access Jenkins at:
 
 http://<EC2-Public-IP>:8080
+```
+### 2. Install Maven
+```bash
+
+cd /opt
+wget https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz
+tar -xzvf apache-maven-3.9.3-bin.tar.gz
+mv apache-maven-3.9.3 maven
+
+Update ~/.bash_profile:
+
+export M2_HOME=/opt/maven
+export M2=$M2_HOME/bin
+export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto.x86_64
+export PATH=$PATH:$HOME/bin:$JAVA_HOME/bin:$M2
+
+Apply changes:
+source ~/.bash_profile
+mvn -v
+```
+### 3. Install Apache Tomcat
+```bash
+cd /opt
+wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.76/bin/apache-tomcat-9.0.76.tar.gz
+tar -xvzf apache-tomcat-9.0.76.tar.gz
+mv apache-tomcat-9.0.76 tomcat
+
+Start Tomcat:
+
+/opt/tomcat/bin/startup.sh
+
+Configure users in tomcat-users.xml:
+
+<role rolename="manager-gui"/>
+<role rolename="manager-script"/>
+<user username="admin" password="admin" roles="manager-gui,manager-script"/>
+```
+### 4. Configure Jenkins Pipeline
+
+1. Add your GitHub repository URL in the Jenkins job.
+
+2. Configure Poll SCM with:
+```bash
+* * * * *
+```
+
+(checks GitHub every minute for changes)
+
+3. Build Steps:
+
+Clean & Package using Maven
+
+Deploy the .war file to Tomcat automatically

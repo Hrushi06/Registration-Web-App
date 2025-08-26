@@ -36,3 +36,7 @@ sudo yum install java-11-amazon-corretto -y
 sudo yum install jenkins -y
 sudo systemctl enable jenkins
 sudo systemctl start jenkins
+
+Access Jenkins at:
+
+http://<EC2-Public-IP>:8080
